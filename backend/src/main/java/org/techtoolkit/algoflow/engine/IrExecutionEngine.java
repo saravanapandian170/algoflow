@@ -1,5 +1,6 @@
 package org.techtoolkit.algoflow.engine;
 
+import org.springframework.stereotype.Component;
 import org.techtoolkit.algoflow.ir.*;
 
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class IrExecutionEngine {
 
     public List<ExecutionStep> execute(
@@ -39,9 +41,9 @@ public class IrExecutionEngine {
                     copyPointers(state),
                     List.of(),
                     "Executing " + instruction.getType(),
-                    state.isFinished()
+                    state.isFinished(),
+                    state.getReturnValue()
             );
-
             steps.add(step);
         }
 
@@ -71,6 +73,11 @@ public class IrExecutionEngine {
 
         if (instruction instanceof IncrementInstruction) {
             executeIncrement((IncrementInstruction) instruction, state);
+            return;
+        }
+
+        if (instruction instanceof JumpInstruction) {
+            executeJump((JumpInstruction) instruction, state);
             return;
         }
 
@@ -107,6 +114,7 @@ public class IrExecutionEngine {
         if (!conditionTrue) {
             state.setInstructionPointer(instruction.getExitInstructionIndex());
         }
+        //state.getVariables().put(indexVar, indexValue++);
     }
 
     private void executeCompare(
@@ -124,7 +132,7 @@ public class IrExecutionEngine {
         boolean match = elementValue == targetValue;
 
         if (!match) {
-            state.incrementInstructionPointer();
+            state.setInstructionPointer(instruction.getJumpIfFalse());
         }
     }
 
@@ -135,6 +143,13 @@ public class IrExecutionEngine {
         String var = instruction.getVariable();
 
         state.getVariables().compute(var, (k, currentValue) -> currentValue + 1);
+    }
+
+    private void executeJump(
+            JumpInstruction instruction,
+            ExecutionState state
+    ) {
+        state.setInstructionPointer(instruction.getIndex());
     }
 
     private void executeReturn(
@@ -150,7 +165,7 @@ public class IrExecutionEngine {
         } else {
             returnValue = (int) value;
         }
-
+        state.setReturnValue(returnValue);
         state.markFinished();
     }
 

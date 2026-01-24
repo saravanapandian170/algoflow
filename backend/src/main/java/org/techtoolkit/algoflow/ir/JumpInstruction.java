@@ -5,12 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class IncrementInstruction implements IrInstruction {
-    private final String variable;
-    private final int jumpIndex = 1;
-
+public class JumpInstruction implements IrInstruction{
+    private int index;
     @Override
     public String getType() {
-        return "INCREMENT";
+        return "JUMP";
     }
 }

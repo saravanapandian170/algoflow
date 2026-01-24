@@ -16,6 +16,7 @@ public class ExecutionStep {
     private final List<Integer> highlightedIndices;
     private final String message;
     private final boolean finished;
+    private Integer returnValue;
 
 }
 

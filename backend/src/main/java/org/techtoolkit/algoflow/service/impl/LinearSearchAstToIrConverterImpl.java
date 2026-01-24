@@ -73,19 +73,15 @@ public class LinearSearchAstToIrConverterImpl implements LinearSearchAstToIrConv
         instructions.add(new CompareInstruction(
                 arrayName + "[" + indexVar + "]",
                 "==",
-                targetVar
+                targetVar,
+                4
         ));
 
         instructions.add(new ReturnInstruction(indexVar));
 
         instructions.add(new IncrementInstruction(indexVar));
 
-        instructions.add(new LoopCheckInstruction(
-                indexVar,
-                "<",
-                arrayName + ".length",
-                6
-        ));
+        instructions.add(new JumpInstruction(1));
 
         instructions.add(new ReturnInstruction(-1));
 

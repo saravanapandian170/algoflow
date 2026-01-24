@@ -29,7 +29,8 @@ public class LinearSearchAstValidatorImpl implements LinearSearchAstValidator {
     public void validate(String code) {
         ParseResult<CompilationUnit> result = javaParser.parse(code);
 
-        if(!result.isSuccessful() || result.getResult().isEmpty()) {
+        if (!result.isSuccessful() || result.getResult().isEmpty()) {
+            result.getProblems().forEach(System.out::println);
             throw new ValidationException("Invalid Linear Search code");
         }
 
@@ -171,19 +172,40 @@ public class LinearSearchAstValidatorImpl implements LinearSearchAstValidator {
 
         List<ReturnStmt> allReturns = method.findAll(ReturnStmt.class);
 
+        /*System.out.println("=== ALL RETURN STATEMENTS ===");
+        for (ReturnStmt r : allReturns) {
+            System.out.println(
+                    "Return: " + r +
+                            " | line=" + r.getBegin().map(p -> p.line).orElse(-1)
+            );
+        }
+
+        System.out.println("=== RETURN LOCATION CHECK ===");
+        for (ReturnStmt r : allReturns) {
+            boolean insideLoop = forLoop.isAncestorOf(r);
+            System.out.println("Return: " + r + " | insideForLoop=" + insideLoop);
+        }*/
+
         if (allReturns.size() != 2) {
             throw new ValidationException("Method must have exactly two return statements");
         }
 
         ReturnStmt finalReturn = allReturns.stream()
-                .filter(r -> !ifStatement.isAncestorOf(r))
+                .filter(r -> !forLoop.isAncestorOf(r))
                 .findFirst()
                 .orElseThrow(() -> new ValidationException("Final return statement missing"));
 
-        if (!finalReturn.getExpression().isPresent() ||
-                !finalReturn.getExpression().get().isIntegerLiteralExpr() ||
-                !finalReturn.getExpression().get().asIntegerLiteralExpr().getValue().equals("-1")) {
+        Expression expr = finalReturn.getExpression()
+                .orElseThrow(() -> new ValidationException("Final return must have an expression"));
 
+        boolean isMinusOne =
+                expr.isUnaryExpr()
+                        && expr.asUnaryExpr().getOperator() == UnaryExpr.Operator.MINUS
+                        && expr.asUnaryExpr().getExpression().isIntegerLiteralExpr()
+                        && expr.asUnaryExpr().getExpression()
+                        .asIntegerLiteralExpr().getValue().equals("1");
+
+        if (!isMinusOne) {
             throw new ValidationException("Final return statement must be -1");
         }
 
