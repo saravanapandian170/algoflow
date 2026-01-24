@@ -1,14 +1,46 @@
 import { useState } from "react";
+import "../styles/LinearSearch.css";
+
+function getStepMessage(step) {
+  if (!step) return "";
+
+  if (step.finished) {
+    return "Search completed.";
+  }
+
+  switch (step.message) {
+    case "Executing INIT":
+      return "Initializing index i = 0";
+
+    case "Executing LOOP_CHECK":
+      return "Checking if index is within array bounds";
+
+    case "Executing COMPARE":
+      return "Comparing current element with target";
+
+    case "Executing INCREMENT":
+      return "Target not found. Moving to next index (i++)";
+
+        case "Executing JUMP":
+      return "";
+
+    case "Executing RETURN":
+      return "Target found. Returning index.";
+
+    default:
+      return step.message;
+  }
+}
 
 function LinearSearch() {
+  const [steps, setSteps] = useState([]);
+  const [currentStep, setCurrentStep] = useState(0);
   const [code, setCode] = useState("");
   const [arrayInput, setArrayInput] = useState("");
   const [target, setTarget] = useState("");
 
   const handleExecute = async () => {
-    const array = arrayInput
-      .split(",")
-      .map((n) => parseInt(n.trim(), 10));
+    const array = arrayInput.split(",").map((n) => parseInt(n.trim(), 10));
 
     const payload = {
       code,
@@ -16,60 +48,126 @@ function LinearSearch() {
       target: parseInt(target, 10),
     };
 
-    console.log("Sending payload:", payload);
     try {
-        const response = await fetch(
+      const response = await fetch(
         "http://localhost:8080/api/execute/linear-search",
         {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-        }
-        );
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
 
-        const data = await response.json();
-        console.log("Execution Steps:", data);
+      const data = await response.json();
+      setSteps(data);
+      setCurrentStep(0);
+      console.log("Execution Steps:", data);
     } catch (err) {
-    console.error("API call failed:", err);
-  }
+      console.error("API call failed:", err);
+    }
   };
 
   return (
-    <div>
-      <h2>Linear Search Visualizer</h2>
+    <div className="linear-search-container">
+      <h2 className="linear-search-title">Linear Search Visualizer</h2>
+      <div className="app-content">
+        <div className="main-layout">
+          {/* LEFT PANEL */}
+          <div className="left-panel">
+            <div className="section">
+              <textarea
+                className="code-editor"
+                placeholder="Paste Linear Search Java code here"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+              />
+            </div>
 
-      <textarea
-        rows={10}
-        cols={70}
-        placeholder="Paste Linear Search Java code here"
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-      />
+            <div className="section input-row">
+              <input
+                className="input"
+                type="text"
+                placeholder="Array (e.g. 4,2,7,1)"
+                value={arrayInput}
+                onChange={(e) => setArrayInput(e.target.value)}
+              />
 
-      <br /><br />
+              <input
+                className="input"
+                type="number"
+                placeholder="Target"
+                value={target}
+                onChange={(e) => setTarget(e.target.value)}
+              />
+            </div>
 
-      <input
-        type="text"
-        placeholder="Array (e.g. 4,2,7,1)"
-        value={arrayInput}
-        onChange={(e) => setArrayInput(e.target.value)}
-      />
+            <div className="section">
+              <button className="execute-button" onClick={handleExecute}>
+                Execute
+              </button>
+            </div>
+          </div>
 
-      <br /><br />
+          {/* RIGHT PANEL */}
+          <div className="right-panel">
+            {steps.length > 0 && (
+              <div className="visualization-content">
+                <>
+                  <h3>Step {currentStep + 1}</h3>
+                  <p className="step-message">
+                    {getStepMessage(steps[currentStep])}
+                  </p>
+                  {steps[currentStep].pointers?.i !== undefined && (
+                    <div className="pointer-value">
+                      Current index{" "}
+                      <strong>i = {steps[currentStep].pointers.i}</strong>
+                    </div>
+                  )}
 
-      <input
-        type="number"
-      
-        placeholder="Target"
-        value={target}
-        onChange={(e) => setTarget(e.target.value)}
-      />
+                  <div className="array-container">
+                    {steps[currentStep].arraySnapshot.map((value, index) => {
+                      const isPointer =
+                        steps[currentStep].pointers?.i === index;
 
-      <br /><br />
+                      return (
+                        <div
+                          key={index}
+                          className={`array-box ${isPointer ? "active" : ""}`}
+                        >
+                          {value}
+                          {isPointer && <div className="pointer">i</div>}
+                        </div>
+                      );
+                    })}
+                  </div>
 
-      <button onClick={handleExecute}>Execute</button>
+                  {steps[currentStep].finished && (
+                    <div className="result-box">
+                      🎯 Result: <span>{steps[currentStep].returnValue}</span>
+                    </div>
+                  )}
+
+                  <div className="navigation">
+                    <button
+                      disabled={currentStep === 0}
+                      onClick={() => setCurrentStep((s) => s - 1)}
+                    >
+                      Prev
+                    </button>
+
+                    <button
+                      disabled={currentStep === steps.length - 1}
+                      onClick={() => setCurrentStep((s) => s + 1)}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
