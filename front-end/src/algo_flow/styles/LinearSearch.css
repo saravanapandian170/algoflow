@@ -1,16 +1,18 @@
+* {
+  box-sizing: border-box;
+}
+
 /* ================================
    Base Page Container
 ================================ */
 .linear-search-container {
-  width: 100%;
-  padding: 32px 48px;
+  width: 90vw;
+  padding: 24px 32px;
   box-sizing: border-box;
-  font-family: "Segoe UI", system-ui, sans-serif;
 }
 
 .app-content {
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
 }
 
 /* ================================
@@ -28,34 +30,43 @@
 ================================ */
 .main-layout {
   display: grid;
-  grid-template-columns: 420px 1fr; /* LEFT fixed, RIGHT flexible */
-  gap: 40px;
-  align-items: flex-start;
+  grid-template-columns: 40% 60%;
+  gap: 32px;
+  height: calc(100vh - 120px);
 }
 
 
-.left-panel,
-.right-panel {
-  padding: 24px;
-  border-radius: 12px;
-}
-
+/* ================================
+   Left Panel
+================================ */
 .left-panel {
   display: flex;
   flex-direction: column;
+  padding: 12px;
+  border-radius: 12px;
+  height: 100%;
+  overflow: visible;
 }
 
+/* ================================
+   Right Panel
+================================ */
 .right-panel {
+  height: 100%;
   background-color: #f9fafb;
-  min-height: 300px;
+  padding: 16px 8px 64px 16px;
+  border-radius: 12px;
+  overflow-y: auto;
   overflow-x: hidden;
+  border-left: 1px solid #e0e0e0;
+  padding-bottom: 48px;
 }
 
 /* ================================
    Sections
 ================================ */
 .section {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 /* ================================
@@ -129,13 +140,47 @@
    Visualization Content
 ================================ */
 .visualization-content {
+  min-height: 100%;               /* PREVENT LAYOUT JUMP */
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   text-align: center;
   gap: 16px;
+  width: 100%; 
 }
 
+/* ================================
+   Empty State (Before Execute)
+================================ */
+.empty-state {
+  min-height: 400px;              /* KEY FIX */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #6b7280;
+  opacity: 0.85;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 42px;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.empty-state span {
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* ================================
+   Step Message
+================================ */
 .step-message {
   font-size: 15px;
   color: #374151;
@@ -153,22 +198,35 @@
 }
 
 /* ================================
+   Target Display
+================================ */
+.target-display {
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* ================================
    Array Visualization
 ================================ */
 .array-container {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
   gap: 12px;
-  row-gap: 28px;
+  row-gap: 36px;
   justify-items: center;
   margin: 20px auto;
-  max-width: 100%;
+  width: 100%;
 }
 
+/* ================================
+   Array Box
+================================ */
 .array-box {
   position: relative;
   width: 52px;
-  height: 52px;
+  height: 64px;
   border: 2px solid #9ca3af;
   border-radius: 8px;
   background-color: #ffffff;
@@ -185,11 +243,14 @@
   transform: translateY(-4px);
 }
 
+/* ================================
+   Pointer Indicator
+================================ */
 .pointer {
+  font-size: 18px;
+  font-weight: 700;
   position: absolute;
-  bottom: -18px;
-  font-size: 13px;
-  font-weight: bold;
+  bottom: -26px;
   color: #0288d1;
 }
 
@@ -215,10 +276,22 @@
    Navigation Buttons
 ================================ */
 .navigation {
+  position: sticky;
+  bottom: 0;
+
   display: flex;
+  justify-content: center;
   gap: 12px;
-  margin-top: 10px;
+
+  padding: 12px 0;
+  margin-top: 24px;
+
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+
+  z-index: 10;
 }
+
 
 .navigation button {
   padding: 8px 16px;
@@ -233,4 +306,55 @@
 .navigation button:disabled {
   background-color: #cbd5f5;
   cursor: not-allowed;
+}
+
+body {
+  overflow: hidden;
+}
+
+.array-input {
+  width: 100%;
+  min-height: 120px;
+  max-height: 300px;          /* makes it big */
+  padding: 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 2px solid #d1d5db;
+  outline: none;
+
+  resize: vertical;
+  overflow-y: auto;
+
+  font-family: "Fira Code", monospace;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+.array-input:focus {
+  border-color: #2563eb;
+}
+
+.input-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+}
+
+.input-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.target-input {
+  width: 200px;
+  padding: 6px 10px;
+  font-size: 14px;
+
+  height: auto;          
+  min-height: unset;     
+  flex: none;            
+
+  box-sizing: border-box;
 }

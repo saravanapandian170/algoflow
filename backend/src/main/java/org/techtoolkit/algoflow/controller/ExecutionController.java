@@ -7,8 +7,6 @@ import org.techtoolkit.algoflow.engine.ExecutionInput;
 import org.techtoolkit.algoflow.engine.ExecutionStep;
 import org.techtoolkit.algoflow.engine.IrExecutionEngine;
 import org.techtoolkit.algoflow.ir.IrInstruction;
-import org.techtoolkit.algoflow.service.LinearSearchAstToIrConverter;
-import org.techtoolkit.algoflow.service.LinearSearchAstValidator;
 
 import java.util.List;
 
@@ -25,7 +23,6 @@ public class ExecutionController {
     public List<ExecutionStep> executeLinearSearch(
             @RequestBody LinearSearchExecutionRequest request
     ) {
-        validator.validate(request.getCode());
 
         List<IrInstruction> instructions =
                 irConverter.convert(request.getCode());

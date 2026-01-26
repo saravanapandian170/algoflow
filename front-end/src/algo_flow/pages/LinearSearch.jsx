@@ -19,10 +19,7 @@ function getStepMessage(step) {
       return "Comparing current element with target";
 
     case "Executing INCREMENT":
-      return "Target not found. Moving to next index (i++)";
-
-        case "Executing JUMP":
-      return "";
+      return "Target not found at this index. Moving to next index (i++)";
 
     case "Executing RETURN":
       return "Target found. Returning index.";
@@ -35,15 +32,15 @@ function getStepMessage(step) {
 function LinearSearch() {
   const [steps, setSteps] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
-  const [code, setCode] = useState("");
   const [arrayInput, setArrayInput] = useState("");
   const [target, setTarget] = useState("");
 
   const handleExecute = async () => {
-    const array = arrayInput.split(",").map((n) => parseInt(n.trim(), 10));
+    const array = arrayInput
+      .split(",")
+      .map((n) => parseInt(n.trim(), 10));
 
     const payload = {
-      code,
       array,
       target: parseInt(target, 10),
     };
@@ -55,13 +52,12 @@ function LinearSearch() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
-        },
+        }
       );
 
       const data = await response.json();
       setSteps(data);
       setCurrentStep(0);
-      console.log("Execution Steps:", data);
     } catch (err) {
       console.error("API call failed:", err);
     }
@@ -70,30 +66,21 @@ function LinearSearch() {
   return (
     <div className="linear-search-container">
       <h2 className="linear-search-title">Linear Search Visualizer</h2>
+
       <div className="app-content">
         <div className="main-layout">
           {/* LEFT PANEL */}
           <div className="left-panel">
-            <div className="section">
+            <div className="section input-column">
               <textarea
-                className="code-editor"
-                placeholder="Paste Linear Search Java code here"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-              />
-            </div>
-
-            <div className="section input-row">
-              <input
-                className="input"
-                type="text"
+                className="array-input"
                 placeholder="Array (e.g. 4,2,7,1)"
                 value={arrayInput}
                 onChange={(e) => setArrayInput(e.target.value)}
               />
 
               <input
-                className="input"
+                className="input target-input"
                 type="number"
                 placeholder="Target"
                 value={target}
@@ -112,57 +99,70 @@ function LinearSearch() {
           <div className="right-panel">
             {steps.length > 0 && (
               <div className="visualization-content">
-                <>
-                  <h3>Step {currentStep + 1}</h3>
-                  <p className="step-message">
-                    {getStepMessage(steps[currentStep])}
-                  </p>
-                  {steps[currentStep].pointers?.i !== undefined && (
-                    <div className="pointer-value">
-                      Current index{" "}
-                      <strong>i = {steps[currentStep].pointers.i}</strong>
-                    </div>
-                  )}
+                <h3>
+                  Step {currentStep + 1} / {steps.length}
+                </h3>
 
-                  <div className="array-container">
-                    {steps[currentStep].arraySnapshot.map((value, index) => {
-                      const isPointer =
-                        steps[currentStep].pointers?.i === index;
+                <div className="target-display">
+                  🎯 Target value: <strong>{target}</strong>
+                </div>
 
-                      return (
-                        <div
-                          key={index}
-                          className={`array-box ${isPointer ? "active" : ""}`}
-                        >
-                          {value}
-                          {isPointer && <div className="pointer">i</div>}
-                        </div>
-                      );
-                    })}
+                <p className="step-message">
+                  {getStepMessage(steps[currentStep])}
+                </p>
+
+                {steps[currentStep].pointers?.i !== undefined && (
+                  <div className="pointer-value">
+                    Current index{" "}
+                    <strong>i = {steps[currentStep].pointers.i}</strong>
                   </div>
+                )}
 
-                  {steps[currentStep].finished && (
-                    <div className="result-box">
-                      🎯 Result: <span>{steps[currentStep].returnValue}</span>
-                    </div>
-                  )}
+                <div className="array-container">
+                  {steps[currentStep].arraySnapshot.map((value, index) => {
+                    const isPointer =
+                      steps[currentStep].pointers?.i === index;
 
-                  <div className="navigation">
-                    <button
-                      disabled={currentStep === 0}
-                      onClick={() => setCurrentStep((s) => s - 1)}
-                    >
-                      Prev
-                    </button>
+                    return (
+                      <div
+                        key={index}
+                        className={`array-box ${isPointer ? "active" : ""}`}
+                      >
+                        {value}
+                        {isPointer && (
+                          <div className="pointer">i</div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
 
-                    <button
-                      disabled={currentStep === steps.length - 1}
-                      onClick={() => setCurrentStep((s) => s + 1)}
-                    >
-                      Next
-                    </button>
+                {steps[currentStep].finished && (
+                  <div className="result-box">
+                    🎯 Result:{" "}
+                    <span>{steps[currentStep].returnValue}</span>
                   </div>
-                </>
+                )}
+
+                <div className="navigation">
+                  <button
+                    disabled={currentStep === 0}
+                    onClick={() =>
+                      setCurrentStep((s) => s - 1)
+                    }
+                  >
+                    Prev
+                  </button>
+
+                  <button
+                    disabled={currentStep === steps.length - 1}
+                    onClick={() =>
+                      setCurrentStep((s) => s + 1)
+                    }
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
             )}
           </div>
