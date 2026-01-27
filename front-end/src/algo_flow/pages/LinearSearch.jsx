@@ -25,7 +25,7 @@ function getStepMessage(step) {
       return "Target found. Returning index.";
 
     default:
-      return step.message;
+      return "";
   }
 }
 
@@ -34,11 +34,21 @@ function LinearSearch() {
   const [currentStep, setCurrentStep] = useState(0);
   const [arrayInput, setArrayInput] = useState("");
   const [target, setTarget] = useState("");
+  const linearSearchCode = `
+  class LinearSearch {
+    public int linearSearch(int[] arr, int target) {
+        for(int i = 0; i < arr.length; i++) {
+          if(arr[i] == target) {
+              return i;
+          }
+        }
+        return -1;
+    }
+  }
+  `;
 
   const handleExecute = async () => {
-    const array = arrayInput
-      .split(",")
-      .map((n) => parseInt(n.trim(), 10));
+    const array = arrayInput.split(",").map((n) => parseInt(n.trim(), 10));
 
     const payload = {
       array,
@@ -52,7 +62,7 @@ function LinearSearch() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
-        }
+        },
       );
 
       const data = await response.json();
@@ -71,6 +81,12 @@ function LinearSearch() {
         <div className="main-layout">
           {/* LEFT PANEL */}
           <div className="left-panel">
+            <div className="section code-block">
+              <pre>
+                <code>{linearSearchCode}</code>
+              </pre>
+            </div>
+
             <div className="section input-column">
               <textarea
                 className="array-input"
@@ -120,18 +136,20 @@ function LinearSearch() {
 
                 <div className="array-container">
                   {steps[currentStep].arraySnapshot.map((value, index) => {
-                    const isPointer =
-                      steps[currentStep].pointers?.i === index;
+                    const isPointer = steps[currentStep].pointers?.i === index;
 
                     return (
-                      <div
-                        key={index}
-                        className={`array-box ${isPointer ? "active" : ""}`}
-                      >
-                        {value}
-                        {isPointer && (
-                          <div className="pointer">i</div>
-                        )}
+                      <div key={index} className="array-item">
+                        {/* INDEX */}
+                        <div className="array-index">{index}</div>
+
+                        {/* VALUE */}
+                        <div
+                          className={`array-box ${isPointer ? "active" : ""}`}
+                        >
+                          {value}
+                          {isPointer && <div className="pointer">i</div>}
+                        </div>
                       </div>
                     );
                   })}
@@ -139,26 +157,21 @@ function LinearSearch() {
 
                 {steps[currentStep].finished && (
                   <div className="result-box">
-                    🎯 Result:{" "}
-                    <span>{steps[currentStep].returnValue}</span>
+                    🎯 Result: <span>{steps[currentStep].returnValue}</span>
                   </div>
                 )}
 
                 <div className="navigation">
                   <button
                     disabled={currentStep === 0}
-                    onClick={() =>
-                      setCurrentStep((s) => s - 1)
-                    }
+                    onClick={() => setCurrentStep((s) => s - 1)}
                   >
                     Prev
                   </button>
 
                   <button
                     disabled={currentStep === steps.length - 1}
-                    onClick={() =>
-                      setCurrentStep((s) => s + 1)
-                    }
+                    onClick={() => setCurrentStep((s) => s + 1)}
                   >
                     Next
                   </button>

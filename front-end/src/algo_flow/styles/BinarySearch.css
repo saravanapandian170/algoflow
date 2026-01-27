@@ -5,10 +5,9 @@
 /* ================================
    Base Page Container
 ================================ */
-.linear-search-container {
+.binary-search-container {
   width: 90vw;
   padding: 24px 32px;
-  box-sizing: border-box;
 }
 
 .app-content {
@@ -18,7 +17,7 @@
 /* ================================
    Title
 ================================ */
-.linear-search-title {
+.binary-search-title {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 24px;
@@ -35,17 +34,15 @@
   height: calc(100vh - 120px);
 }
 
-
 /* ================================
    Left Panel
 ================================ */
 .left-panel {
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  border-radius: 12px;
   height: 100%;
-  overflow: visible;
+  max-height: calc(100vh - 120px); /* adjust if you have header/navbar */
+  overflow-y: auto;
+  padding-right: 8px; /* prevents scrollbar overlap */
+  box-sizing: border-box;
 }
 
 /* ================================
@@ -59,50 +56,38 @@
   overflow-y: auto;
   overflow-x: hidden;
   border-left: 1px solid #e0e0e0;
-  padding-bottom: 48px;
 }
 
 /* ================================
    Sections
 ================================ */
 .section {
-  margin-bottom: 25px;
+  margin-bottom: 24px;
 }
 
 /* ================================
-   Code Editor
+   Code Block
 ================================ */
-.code-editor {
+.code-block pre {
   width: 100%;
   min-height: 220px;
   padding: 12px;
-  font-family: "Fira Code", monospace;
-  font-size: 14px;
   border-radius: 8px;
-  border: 1px solid #d1d5db;
   background-color: #0f172a;
   color: #e5e7eb;
-  outline: none;
-  resize: vertical;
-}
-
-.code-editor::placeholder {
-  color: #9ca3af;
+  font-family: "Fira Code", monospace;
+  font-size: 14px;
+  border: 1px solid #d1d5db;
+  overflow: auto;
 }
 
 /* ================================
    Inputs
 ================================ */
-.input-row {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
 .input {
-  flex: 1;
-  min-width: 200px;
+  width: 100%;
   padding: 10px 12px;
+  margin-bottom: 12px;
   font-size: 14px;
   border-radius: 6px;
   border: 1px solid #d1d5db;
@@ -137,74 +122,31 @@
 }
 
 /* ================================
-   Visualization Content
-================================ */
-.visualization-content {
-  min-height: 100%;               /* PREVENT LAYOUT JUMP */
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  text-align: center;
-  gap: 16px;
-  width: 100%; 
-}
-
-/* ================================
-   Empty State (Before Execute)
-================================ */
-.empty-state {
-  min-height: 400px;              /* KEY FIX */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: #6b7280;
-  opacity: 0.85;
-  text-align: center;
-}
-
-.empty-icon {
-  font-size: 42px;
-  margin-bottom: 12px;
-}
-
-.empty-state p {
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.empty-state span {
-  font-size: 13px;
-  margin-top: 4px;
-}
-
-/* ================================
    Step Message
 ================================ */
 .step-message {
   font-size: 15px;
   color: #374151;
-}
-
-/* ================================
-   Pointer Value Badge
-================================ */
-.pointer-value {
-  font-size: 15px;
-  color: #374151;
-  background-color: #e0f2fe;
-  padding: 6px 12px;
-  border-radius: 6px;
-}
-
-/* ================================
-   Target Display
-================================ */
-.target-display {
   margin-bottom: 8px;
-  font-size: 16px;
+}
+
+/* ================================
+   Pointer Values
+================================ */
+.pointers {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.pointers span {
+  font-size: 14px;
+  padding: 6px 12px;
+  background-color: #e0f2fe;
+  border-radius: 6px;
+  color: #0369a1;
   font-weight: 500;
-  color: #333;
 }
 
 /* ================================
@@ -237,21 +179,45 @@
   transition: all 0.2s ease;
 }
 
-.array-box.active {
-  background-color: #e0f2fe;
-  border-color: #0288d1;
+/* ================================
+   Binary Search Highlights
+================================ */
+.array-box.low {
+  border-color: #16a34a;
+  background-color: #dcfce7;
+}
+
+.array-box.mid {
+  border-color: #2563eb;
+  background-color: #dbeafe;
   transform: translateY(-4px);
 }
 
+.array-box.high {
+  border-color: #dc2626;
+  background-color: #fee2e2;
+}
+
 /* ================================
-   Pointer Indicator
+   Pointer Indicators
 ================================ */
 .pointer {
   font-size: 18px;
   font-weight: 700;
   position: absolute;
   bottom: -26px;
-  color: #0288d1;
+}
+
+.low-ptr {
+  color: #16a34a;
+}
+
+.mid-ptr {
+  color: #2563eb;
+}
+
+.high-ptr {
+  color: #dc2626;
 }
 
 /* ================================
@@ -265,11 +231,7 @@
   border: 1px solid #06b6d4;
   font-size: 16px;
   font-weight: 500;
-}
-
-.result-box span {
-  font-weight: 700;
-  color: #0e7490;
+  text-align: center;
 }
 
 /* ================================
@@ -278,20 +240,15 @@
 .navigation {
   position: sticky;
   bottom: 0;
-
   display: flex;
   justify-content: center;
   gap: 12px;
-
   padding: 12px 0;
   margin-top: 24px;
-
   background: #f9fafb;
   border-top: 1px solid #e5e7eb;
-
   z-index: 10;
 }
-
 
 .navigation button {
   padding: 8px 16px;
@@ -308,55 +265,11 @@
   cursor: not-allowed;
 }
 
+/* ================================
+   Prevent Body Scroll
+================================ */
 body {
   overflow: hidden;
-}
-
-.array-input {
-  width: 100%;
-  min-height: 120px;
-  max-height: 300px;          /* makes it big */
-  padding: 12px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: 2px solid #d1d5db;
-  outline: none;
-
-  resize: vertical;
-  overflow-y: auto;
-
-  font-family: "Fira Code", monospace;
-  line-height: 1.6;
-  box-sizing: border-box;
-}
-
-.array-input:focus {
-  border-color: #2563eb;
-}
-
-.input-row {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 16px;
-}
-
-.input-column {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: flex-start;
-}
-
-.target-input {
-  width: 200px;
-  padding: 6px 10px;
-  font-size: 14px;
-
-  height: auto;          
-  min-height: unset;     
-  flex: none;            
-
-  box-sizing: border-box;
 }
 
 .array-item {
@@ -367,6 +280,24 @@ body {
 
 .array-index {
   font-size: 12px;
-  color: #888;
+  color: #666;
   margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.array-input {
+  width: 100%;
+  min-height: 60px;      /* good default height */
+  padding: 8px;
+  font-size: 14px;
+  resize: vertical;     /* 🔑 user can drag vertically */
+  box-sizing: border-box;
+}
+
+.left-panel {
+  height: 100%;
+  max-height: calc(100vh - 120px); /* adjust if you have header/navbar */
+  overflow-y: auto;
+  padding-right: 8px; /* prevents scrollbar overlap */
+  box-sizing: border-box;
 }

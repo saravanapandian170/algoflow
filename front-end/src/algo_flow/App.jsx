@@ -1,10 +1,19 @@
+import { Routes, Route } from "react-router-dom";
+import SearchSelector from "./SearchSelector";
 import LinearSearch from "./pages/LinearSearch";
+import BinarySearch from "./pages/BinarySearch";
+import "./styles/App.css";
 
 function App() {
   return (
-    <div style={{ padding: "20px" }}>
-      <LinearSearch />
-    </div>
+    <Routes>
+      {/* Home / Landing Page */}
+      <Route path="/" element={<SearchSelector />} />
+
+      {/* Algorithm Pages */}
+      <Route path="/linear-search" element={<LinearSearch />} />
+      <Route path="/binary-search" element={<BinarySearch />} />
+    </Routes>
   );
 }
 

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LinearSearchExecutionRequest {
+public class BinarySearchExecutionRequest {
     private int[] array;
     private int target;
 }

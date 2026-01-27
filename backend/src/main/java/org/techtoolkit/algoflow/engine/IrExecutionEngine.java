@@ -86,6 +86,11 @@ public class IrExecutionEngine {
             return;
         }
 
+        if (instruction instanceof AssignInstruction) {
+            executeAssign((AssignInstruction) instruction, state);
+            return;
+        }
+
         throw new UnsupportedOperationException(
                 "Unsupported instruction: " + instruction.getType()
         );
@@ -104,17 +109,33 @@ public class IrExecutionEngine {
             ExecutionState state,
             List<IrInstruction> instructions
     ) {
-        String indexVar = instruction.getLeft();
+        int leftValue = resolveValue(instruction.getLeft(), state);
+        int rightValue = resolveValue(instruction.getRight(), state);
 
-        int indexValue = state.getVariables().get(indexVar);
-        int arrayLength = state.getArray().length;
+        boolean conditionTrue;
 
-        boolean conditionTrue = indexValue < arrayLength;
+        switch (instruction.getOperator()) {
+            case "<":
+                conditionTrue = leftValue < rightValue;
+                break;
+            case "<=":
+                conditionTrue = leftValue <= rightValue;
+                break;
+            case ">":
+                conditionTrue = leftValue > rightValue;
+                break;
+            case ">=":
+                conditionTrue = leftValue >= rightValue;
+                break;
+            default:
+                throw new UnsupportedOperationException(
+                        "Unsupported operator: " + instruction.getOperator()
+                );
+        }
 
         if (!conditionTrue) {
             state.setInstructionPointer(instruction.getExitInstructionIndex());
         }
-        //state.getVariables().put(indexVar, indexValue++);
     }
 
     private void executeCompare(
@@ -122,16 +143,28 @@ public class IrExecutionEngine {
             ExecutionState state,
             List<IrInstruction> instructions
     ) {
-        String left = instruction.getLeft();
-        String indexVar = left.substring(left.indexOf('[') + 1, left.indexOf(']'));
+        int leftValue = resolveCompareLeft(instruction.getLeft(), state);
+        int rightValue = resolveValue(instruction.getRight(), state);
 
-        int indexValue = state.getVariables().get(indexVar);
-        int elementValue = state.getArray()[indexValue];
-        int targetValue = state.getTarget();
+        boolean conditionTrue;
 
-        boolean match = elementValue == targetValue;
+        switch (instruction.getOperator()) {
+            case "==":
+                conditionTrue = leftValue == rightValue;
+                break;
+            case "<":
+                conditionTrue = leftValue < rightValue;
+                break;
+            case ">":
+                conditionTrue = leftValue > rightValue;
+                break;
+            default:
+                throw new UnsupportedOperationException(
+                        "Unsupported compare operator: " + instruction.getOperator()
+                );
+        }
 
-        if (!match) {
+        if (!conditionTrue) {
             state.setInstructionPointer(instruction.getJumpIfFalse());
         }
     }
@@ -168,6 +201,105 @@ public class IrExecutionEngine {
         state.setReturnValue(returnValue);
         state.markFinished();
     }
+
+    private void executeAssign(
+            AssignInstruction instruction,
+            ExecutionState state
+    ) {
+        String variable = instruction.getVariable();
+        String expression = instruction.getExpression();
+
+        int value = evaluateExpression(expression, state);
+
+        state.getVariables().put(variable, value);
+    }
+
+    private int evaluateExpression(
+            String expr,
+            ExecutionState state
+    ) {
+        expr = expr.replaceAll("\\s+", "");
+
+        // array.length
+        if (expr.equals("array.length")) {
+            return state.getArray().length;
+        }
+
+        // array.length - 1
+        if (expr.equals("array.length-1")) {
+            return state.getArray().length - 1;
+        }
+
+        // (low+high)/2
+        if (expr.matches("\\(.*\\)/2")) {
+            String inside = expr.substring(1, expr.indexOf(")"));
+            String[] parts = inside.split("\\+");
+            int left = state.getVariables().get(parts[0]);
+            int right = state.getVariables().get(parts[1]);
+            return (left + right) / 2;
+        }
+
+        // mid+1 or mid-1
+        if (expr.contains("+")) {
+            String[] parts = expr.split("\\+");
+            return state.getVariables().get(parts[0]) + Integer.parseInt(parts[1]);
+        }
+
+        if (expr.contains("-")) {
+            String[] parts = expr.split("-");
+            return state.getVariables().get(parts[0]) - Integer.parseInt(parts[1]);
+        }
+
+        // single variable
+        if (state.getVariables().containsKey(expr)) {
+            return state.getVariables().get(expr);
+        }
+
+        // literal number
+        return Integer.parseInt(expr);
+    }
+
+    private int resolveCompareLeft(
+            String left,
+            ExecutionState state
+    ) {
+        // array[index]
+        if (left.startsWith("array[")) {
+            String indexVar =
+                    left.substring(left.indexOf('[') + 1, left.indexOf(']'));
+
+            int index = state.getVariables().get(indexVar);
+            return state.getArray()[index];
+        }
+
+        throw new IllegalArgumentException("Invalid compare left: " + left);
+    }
+
+    private int resolveValue(String token, ExecutionState state) {
+
+        // array.length
+        if (token.equals("array.length")) {
+            return state.getArray().length;
+        }
+
+        // target input
+        if (token.equals("target")) {
+            return state.getTarget();
+        }
+
+        // numeric literal
+        if (token.matches("-?\\d+")) {
+            return Integer.parseInt(token);
+        }
+
+        // algorithm variable (low, high, mid, i)
+        if (state.getVariables().containsKey(token)) {
+            return state.getVariables().get(token);
+        }
+
+        throw new IllegalArgumentException("Unknown token: " + token);
+    }
+
 
     private int[] copyArray(int[] array) {
         return array == null ? null : array.clone();
