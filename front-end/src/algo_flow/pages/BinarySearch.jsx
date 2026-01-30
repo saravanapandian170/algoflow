@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/BinarySearch.css";
+import { useAlgorithmPlayer } from "../hooks/useAlgorithmPlayer.js";
 
 function getStepMessage(step) {
   if (!step) return "";
@@ -34,9 +35,17 @@ function getStepMessage(step) {
 
 function BinarySearch() {
   const [steps, setSteps] = useState([]);
-  const [currentStep, setCurrentStep] = useState(0);
   const [arrayInput, setArrayInput] = useState("");
   const [target, setTarget] = useState("");
+  const {
+    currentStep,
+    setCurrentStep,
+    isPlaying,
+    setIsPlaying,
+    speed,
+    setSpeed,
+  } = useAlgorithmPlayer(steps);
+
   const binarySearchCode = `
     public class BinarySearch {
 
@@ -193,6 +202,33 @@ function BinarySearch() {
                   onClick={() => setCurrentStep((s) => s + 1)}
                 >
                   Next
+                </button>
+
+                <button onClick={() => setIsPlaying(true)} disabled={isPlaying}>
+                  ▶ Play
+                </button>
+
+                <button
+                  onClick={() => setIsPlaying(false)}
+                  disabled={!isPlaying}
+                >
+                  ⏸ Pause
+                </button>
+                <select
+                  value={speed}
+                  onChange={(e) => setSpeed(Number(e.target.value))}
+                >
+                  <option value={1200}>Slow</option>
+                  <option value={800}>Normal</option>
+                  <option value={400}>Fast</option>
+                </select>
+                <button
+                  onClick={() => {
+                    setIsPlaying(false);
+                    setCurrentStep(0);
+                  }}
+                >
+                  ⏹ Reset
                 </button>
               </div>
             </>

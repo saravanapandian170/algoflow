@@ -370,3 +370,20 @@ body {
   color: #888;
   margin-bottom: 4px;
 }
+
+.navigation select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.navigation button:disabled {
+  opacity: 0.6;
+}
+
+.array-box:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}

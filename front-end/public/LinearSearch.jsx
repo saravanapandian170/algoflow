@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "../styles/LinearSearch.css";
-import { useAlgorithmPlayer } from "../hooks/useAlgorithmPlayer.js";
 
 function getStepMessage(step) {
   if (!step) return "";
@@ -32,18 +31,9 @@ function getStepMessage(step) {
 
 function LinearSearch() {
   const [steps, setSteps] = useState([]);
+  const [currentStep, setCurrentStep] = useState(0);
   const [arrayInput, setArrayInput] = useState("");
   const [target, setTarget] = useState("");
-
-  const {
-    currentStep,
-    setCurrentStep,
-    isPlaying,
-    setIsPlaying,
-    speed,
-    setSpeed,
-  } = useAlgorithmPlayer(steps);
-
   const linearSearchCode = `
   class LinearSearch {
     public int linearSearch(int[] arr, int target) {
@@ -77,6 +67,7 @@ function LinearSearch() {
 
       const data = await response.json();
       setSteps(data);
+      setCurrentStep(0);
     } catch (err) {
       console.error("API call failed:", err);
     }
@@ -183,36 +174,6 @@ function LinearSearch() {
                     onClick={() => setCurrentStep((s) => s + 1)}
                   >
                     Next
-                  </button>
-
-                  <button
-                    onClick={() => setIsPlaying(true)}
-                    disabled={isPlaying}
-                  >
-                    ▶ Play
-                  </button>
-
-                  <button
-                    onClick={() => setIsPlaying(false)}
-                    disabled={!isPlaying}
-                  >
-                    ⏸ Pause
-                  </button>
-                  <select
-                    value={speed}
-                    onChange={(e) => setSpeed(Number(e.target.value))}
-                  >
-                    <option value={1200}>Slow</option>
-                    <option value={800}>Normal</option>
-                    <option value={400}>Fast</option>
-                  </select>
-                  <button
-                    onClick={() => {
-                      setIsPlaying(false);
-                      setCurrentStep(0);
-                    }}
-                  >
-                    ⏹ Reset
                   </button>
                 </div>
               </div>
