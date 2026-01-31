@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "../styles/BinarySearch.css";
+import "../styles/LinearSearch.css";
 import { useAlgorithmPlayer } from "../hooks/useAlgorithmPlayer.js";
+import AlgorithmControls from "../components/AlgorithmControls";
 
 function getStepMessage(step) {
   if (!step) return "";
@@ -131,107 +133,90 @@ function BinarySearch() {
           </button>
         </div>
 
-        {/* RIGHT PANEL */}
         <div className="right-panel">
           {steps.length > 0 && (
-            <>
-              <h3>
-                Step {currentStep + 1} / {steps.length}
-              </h3>
+            <div className="visualization-layout">
+              {/* 1️⃣ HEADER (fixed) */}
+              <div className="viz-header">
+                <h3>
+                  Step {currentStep + 1} / {steps.length}
+                </h3>
 
-              <p className="step-message">{getStepMessage(step)}</p>
+                <p className="step-message">{getStepMessage(step)}</p>
+              </div>
 
-              <div className="pointers">
+              <div className="viz-variables">
                 {step.pointers?.low !== undefined && (
-                  <span>low = {step.pointers.low}</span>
+                  <div className="pointer-value">low = {step.pointers.low}</div>
                 )}
                 {step.pointers?.mid !== undefined && (
-                  <span>mid = {step.pointers.mid}</span>
+                  <div className="pointer-value">mid = {step.pointers.mid}</div>
                 )}
                 {step.pointers?.high !== undefined && (
-                  <span>high = {step.pointers.high}</span>
+                  <div className="pointer-value">
+                    high = {step.pointers.high}
+                  </div>
                 )}
-              </div>
 
-              <div className="array-container">
-                {step.arraySnapshot.map((value, index) => {
-                  const { low, mid, high } = step.pointers || {};
-
-                  let className = "array-box";
-                  if (index === mid) className += " mid";
-                  else if (index === low) className += " low";
-                  else if (index === high) className += " high";
-
-                  return (
-                    <div key={index} className="array-item">
-                      <div className="array-index">{index}</div>
-
-                      <div className={className}>
-                        {value}
-                        {index === low && (
-                          <div className="pointer low-ptr">L</div>
-                        )}
-                        {index === mid && (
-                          <div className="pointer mid-ptr">M</div>
-                        )}
-                        {index === high && (
-                          <div className="pointer high-ptr">H</div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {step.finished && (
-                <div className="result-box">
-                  🎯 Result: <strong>{step.returnValue}</strong>
+                <div className="target-display">
+                  🎯 Target value: <strong>{target}</strong>
                 </div>
-              )}
+              </div>
 
-              <div className="navigation">
-                <button
-                  disabled={currentStep === 0}
-                  onClick={() => setCurrentStep((s) => s - 1)}
-                >
-                  Prev
-                </button>
+              <div className="viz-scrollable">
+                <div className="array-container">
+                  {step.arraySnapshot.map((value, index) => {
+                    const { low, mid, high } = step.pointers || {};
 
-                <button
-                  disabled={currentStep === steps.length - 1}
-                  onClick={() => setCurrentStep((s) => s + 1)}
-                >
-                  Next
-                </button>
+                    let className = "array-box";
+                    if (index === mid) className += " mid";
+                    else if (index === low) className += " low";
+                    else if (index === high) className += " high";
 
-                <button onClick={() => setIsPlaying(true)} disabled={isPlaying}>
-                  ▶ Play
-                </button>
+                    return (
+                      <div key={index} className="array-item">
+                        <div className="array-index">{index}</div>
 
-                <button
-                  onClick={() => setIsPlaying(false)}
-                  disabled={!isPlaying}
-                >
-                  ⏸ Pause
-                </button>
-                <select
-                  value={speed}
-                  onChange={(e) => setSpeed(Number(e.target.value))}
-                >
-                  <option value={1200}>Slow</option>
-                  <option value={800}>Normal</option>
-                  <option value={400}>Fast</option>
-                </select>
-                <button
-                  onClick={() => {
+                        <div className={className}>
+                          {value}
+                          {index === low && (
+                            <div className="pointer low-ptr">L</div>
+                          )}
+                          {index === mid && (
+                            <div className="pointer mid-ptr">M</div>
+                          )}
+                          {index === high && (
+                            <div className="pointer high-ptr">H</div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {step.finished && (
+                  <div className="result-box">
+                    🎯 Result: <strong>{step.returnValue}</strong>
+                  </div>
+                )}
+
+                <AlgorithmControls
+                  currentStep={currentStep}
+                  totalSteps={steps.length}
+                  isPlaying={isPlaying}
+                  onPrev={() => setCurrentStep((s) => s - 1)}
+                  onNext={() => setCurrentStep((s) => s + 1)}
+                  onPlay={() => setIsPlaying(true)}
+                  onPause={() => setIsPlaying(false)}
+                  onReset={() => {
                     setIsPlaying(false);
                     setCurrentStep(0);
                   }}
-                >
-                  ⏹ Reset
-                </button>
+                  speed={speed}
+                  onSpeedChange={(e) => setSpeed(Number(e.target.value))}
+                />
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>

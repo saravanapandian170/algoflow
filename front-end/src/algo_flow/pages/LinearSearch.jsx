@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/LinearSearch.css";
 import { useAlgorithmPlayer } from "../hooks/useAlgorithmPlayer.js";
+import AlgorithmControls from "../components/AlgorithmControls";
 
 function getStepMessage(step) {
   if (!step) return "";
@@ -26,7 +27,7 @@ function getStepMessage(step) {
       return "Target found. Returning index.";
 
     default:
-      return "";
+      return "    ";
   }
 }
 
@@ -123,97 +124,73 @@ function LinearSearch() {
           {/* RIGHT PANEL */}
           <div className="right-panel">
             {steps.length > 0 && (
-              <div className="visualization-content">
-                <h3>
-                  Step {currentStep + 1} / {steps.length}
-                </h3>
+              <div className="visualization-layout">
+                {/* 1️⃣ STEP HEADER (fixed) */}
+                <div className="viz-header">
+                  <h3>
+                    Step {currentStep + 1} / {steps.length}
+                  </h3>
 
-                <div className="target-display">
-                  🎯 Target value: <strong>{target}</strong>
+                  <p className="step-message">
+                    {getStepMessage(steps[currentStep])}
+                  </p>
                 </div>
 
-                <p className="step-message">
-                  {getStepMessage(steps[currentStep])}
-                </p>
+                {/* 2️⃣ VARIABLES PANEL (fixed) */}
+                <div className="viz-variables">
+                  {steps[currentStep].pointers?.i !== undefined && (
+                    <div className="pointer-value">
+                      i = <strong>{steps[currentStep].pointers.i}</strong>
+                    </div>
+                  )}
 
-                {steps[currentStep].pointers?.i !== undefined && (
-                  <div className="pointer-value">
-                    Current index{" "}
-                    <strong>i = {steps[currentStep].pointers.i}</strong>
+                  <div className="target-display">
+                    🎯 Target value: <strong>{target}</strong>
                   </div>
-                )}
+                </div>
 
-                <div className="array-container">
-                  {steps[currentStep].arraySnapshot.map((value, index) => {
-                    const isPointer = steps[currentStep].pointers?.i === index;
+                {/* 3️⃣ SCROLLABLE CONTENT */}
+                <div className="viz-scrollable">
+                  <div className="array-container">
+                    {steps[currentStep].arraySnapshot.map((value, index) => {
+                      const isPointer =
+                        steps[currentStep].pointers?.i === index;
 
-                    return (
-                      <div key={index} className="array-item">
-                        {/* INDEX */}
-                        <div className="array-index">{index}</div>
-
-                        {/* VALUE */}
-                        <div
-                          className={`array-box ${isPointer ? "active" : ""}`}
-                        >
-                          {value}
-                          {isPointer && <div className="pointer">i</div>}
+                      return (
+                        <div key={index} className="array-item">
+                          <div className="array-index">{index}</div>
+                          <div
+                            className={`array-box ${isPointer ? "active" : ""}`}
+                          >
+                            {value}
+                            {isPointer && <div className="pointer">i</div>}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {steps[currentStep].finished && (
-                  <div className="result-box">
-                    🎯 Result: <span>{steps[currentStep].returnValue}</span>
+                      );
+                    })}
                   </div>
-                )}
 
-                <div className="navigation">
-                  <button
-                    disabled={currentStep === 0}
-                    onClick={() => setCurrentStep((s) => s - 1)}
-                  >
-                    Prev
-                  </button>
+                  {steps[currentStep].finished && (
+                    <div className="result-box">
+                      🎯 Result: <span>{steps[currentStep].returnValue}</span>
+                    </div>
+                  )}
 
-                  <button
-                    disabled={currentStep === steps.length - 1}
-                    onClick={() => setCurrentStep((s) => s + 1)}
-                  >
-                    Next
-                  </button>
-
-                  <button
-                    onClick={() => setIsPlaying(true)}
-                    disabled={isPlaying}
-                  >
-                    ▶ Play
-                  </button>
-
-                  <button
-                    onClick={() => setIsPlaying(false)}
-                    disabled={!isPlaying}
-                  >
-                    ⏸ Pause
-                  </button>
-                  <select
-                    value={speed}
-                    onChange={(e) => setSpeed(Number(e.target.value))}
-                  >
-                    <option value={1200}>Slow</option>
-                    <option value={800}>Normal</option>
-                    <option value={400}>Fast</option>
-                  </select>
-                  <button
-                    onClick={() => {
+                  <AlgorithmControls
+                    currentStep={currentStep}
+                    totalSteps={steps.length}
+                    isPlaying={isPlaying}
+                    onPrev={() => setCurrentStep((s) => s - 1)}
+                    onNext={() => setCurrentStep((s) => s + 1)}
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onReset={() => {
                       setIsPlaying(false);
                       setCurrentStep(0);
                     }}
-                  >
-                    ⏹ Reset
-                  </button>
+                    speed={speed}
+                    onSpeedChange={(e) => setSpeed(Number(e.target.value))}
+                  />
                 </div>
               </div>
             )}

@@ -54,12 +54,11 @@
 .right-panel {
   height: 100%;
   background-color: #f9fafb;
-  padding: 16px 8px 64px 16px;
+  padding: 8px 8px 16px 12px;
   border-radius: 12px;
-  overflow-y: auto;
+
   overflow-x: hidden;
   border-left: 1px solid #e0e0e0;
-  padding-bottom: 48px;
 }
 
 /* ================================
@@ -184,6 +183,9 @@
 .step-message {
   font-size: 15px;
   color: #374151;
+
+  min-height: 20px;
+  line-height: 20px; 
 }
 
 /* ================================
@@ -386,4 +388,36 @@ body {
 
 .array-box:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.visualization-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.viz-header {
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;   
+  text-align: center; 
+}
+
+.viz-variables {
+  padding: 8px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.viz-scrollable {
+  flex: 1;                
+  overflow-y: auto;        
+  padding-top: 8px;
 }
