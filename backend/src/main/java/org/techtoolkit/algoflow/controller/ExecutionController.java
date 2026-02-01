@@ -3,8 +3,10 @@ package org.techtoolkit.algoflow.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.techtoolkit.algoflow.algorithm.template.BinarySearchTemplate;
+import org.techtoolkit.algoflow.algorithm.template.FirstAndLastOccurrenceTemplate;
 import org.techtoolkit.algoflow.algorithm.template.LinearSearchTemplate;
 import org.techtoolkit.algoflow.dto.BinarySearchExecutionRequest;
+import org.techtoolkit.algoflow.dto.FirstAndLastOccurrenceExecutionRequest;
 import org.techtoolkit.algoflow.dto.LinearSearchExecutionRequest;
 import org.techtoolkit.algoflow.engine.ExecutionInput;
 import org.techtoolkit.algoflow.engine.ExecutionStep;
@@ -20,6 +22,7 @@ import java.util.List;
 public class ExecutionController {
     private final LinearSearchTemplate linearSearchTemplate;
     private final BinarySearchTemplate  binarySearchTemplate;
+    private final FirstAndLastOccurrenceTemplate firstAndLastOccurrenceTemplate;
     private final IrExecutionEngine executionEngine;
 
     @PostMapping("/linear-search")
@@ -41,6 +44,19 @@ public class ExecutionController {
     public List<ExecutionStep> executeBinarySearch(@RequestBody BinarySearchExecutionRequest request) {
         List<IrInstruction> instructions = binarySearchTemplate.buildIr();
 
+        ExecutionInput input = new ExecutionInput(
+                request.getArray(),
+                request.getTarget()
+        );
+
+        return executionEngine.execute(instructions, input);
+    }
+
+    @PostMapping("/first-and-last-occurrence")
+    public List<ExecutionStep> executeFirstAndLastOccurrence(
+            @RequestBody FirstAndLastOccurrenceExecutionRequest request
+    ) {
+        List<IrInstruction> instructions = firstAndLastOccurrenceTemplate.buildCombinedIr();
         ExecutionInput input = new ExecutionInput(
                 request.getArray(),
                 request.getTarget()
