@@ -11,7 +11,6 @@ import java.util.Map;
 public class ExecutionStep {
 
     private final int stepNumber;
-    private final int[] arraySnapshot;
     private final Map<String, Integer> pointers;
     private final List<Integer> highlightedIndices;
     private final String message;

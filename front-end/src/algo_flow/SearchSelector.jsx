@@ -15,6 +15,7 @@ function SearchSelector() {
         <h2 className="section-title">Select Search Algorithm</h2>
 
         <div className="algo-cards">
+          {/* Linear Search */}
           <div
             className="algo-card"
             onClick={() => navigate("/linear-search")}
@@ -24,12 +25,25 @@ function SearchSelector() {
             <span className="complexity">O(n)</span>
           </div>
 
+          {/* Binary Search */}
           <div
             className="algo-card"
             onClick={() => navigate("/binary-search")}
           >
             <h3>Binary Search</h3>
             <p>Divide array into halves (sorted array)</p>
+            <span className="complexity">O(log n)</span>
+          </div>
+
+          {/* First & Last Occurrence */}
+          <div
+            className="algo-card"
+            onClick={() => navigate("/first-last-occurrence")}
+          >
+            <h3>First & Last Occurrence</h3>
+            <p>
+              Find the first and last position of a target using binary search
+            </p>
             <span className="complexity">O(log n)</span>
           </div>
         </div>

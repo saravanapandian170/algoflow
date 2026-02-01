@@ -9,6 +9,7 @@ import org.techtoolkit.algoflow.dto.BinarySearchExecutionRequest;
 import org.techtoolkit.algoflow.dto.FirstAndLastOccurrenceExecutionRequest;
 import org.techtoolkit.algoflow.dto.LinearSearchExecutionRequest;
 import org.techtoolkit.algoflow.engine.ExecutionInput;
+import org.techtoolkit.algoflow.engine.ExecutionResult;
 import org.techtoolkit.algoflow.engine.ExecutionStep;
 import org.techtoolkit.algoflow.engine.IrExecutionEngine;
 import org.techtoolkit.algoflow.ir.IrInstruction;
@@ -26,7 +27,7 @@ public class ExecutionController {
     private final IrExecutionEngine executionEngine;
 
     @PostMapping("/linear-search")
-    public List<ExecutionStep> executeLinearSearch(
+    public ExecutionResult executeLinearSearch(
             @RequestBody LinearSearchExecutionRequest request
     ) {
 
@@ -36,24 +37,28 @@ public class ExecutionController {
                 request.getArray(),
                 request.getTarget()
         );
+        List<ExecutionStep> steps =
+                executionEngine.execute(instructions, input);
 
-        return executionEngine.execute(instructions, input);
+        return new ExecutionResult(request.getArray(), steps);
     }
 
     @PostMapping("/binary-search")
-    public List<ExecutionStep> executeBinarySearch(@RequestBody BinarySearchExecutionRequest request) {
+    public ExecutionResult executeBinarySearch(@RequestBody BinarySearchExecutionRequest request) {
         List<IrInstruction> instructions = binarySearchTemplate.buildIr();
 
         ExecutionInput input = new ExecutionInput(
                 request.getArray(),
                 request.getTarget()
         );
+        List<ExecutionStep> steps =
+                executionEngine.execute(instructions, input);
 
-        return executionEngine.execute(instructions, input);
+        return new ExecutionResult(request.getArray(), steps);
     }
 
     @PostMapping("/first-and-last-occurrence")
-    public List<ExecutionStep> executeFirstAndLastOccurrence(
+    public ExecutionResult executeFirstAndLastOccurrence(
             @RequestBody FirstAndLastOccurrenceExecutionRequest request
     ) {
         List<IrInstruction> instructions = firstAndLastOccurrenceTemplate.buildCombinedIr();
@@ -61,7 +66,9 @@ public class ExecutionController {
                 request.getArray(),
                 request.getTarget()
         );
+        List<ExecutionStep> steps =
+                executionEngine.execute(instructions, input);
 
-        return executionEngine.execute(instructions, input);
+        return new ExecutionResult(request.getArray(), steps);
     }
 }

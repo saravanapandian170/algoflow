@@ -8,38 +8,39 @@ function getStepMessage(step) {
   if (!step) return "";
 
   if (step.finished) {
-    return "Binary Search completed.";
+    return "First and Last Occurrence search completed.";
   }
 
   switch (step.message) {
     case "Executing INIT":
-      return "Initializing search boundaries";
+      return "Initializing variables";
 
     case "Executing ASSIGN":
-      return "Updating pointer values";
+      return "Updating pointers or result indices";
 
     case "Executing LOOP_CHECK":
-      return "Checking if low ≤ high";
+      return "Checking search boundaries";
 
     case "Executing COMPARE":
       return "Comparing middle element with target";
 
     case "Executing JUMP":
-      return "Updating search range";
+      return "Adjusting search range";
 
     case "Executing RETURN":
-      return "Target found or search exhausted";
+      return "Returning first and last indices";
 
     default:
       return step.message;
   }
 }
 
-function BinarySearch() {
+function FirstAndLastOccurrence() {
   const [steps, setSteps] = useState([]);
-  const [array, setArray] = useState([]);
+  const [array, setArray] = useState([]); 
   const [arrayInput, setArrayInput] = useState("");
   const [target, setTarget] = useState("");
+
   const {
     currentStep,
     setCurrentStep,
@@ -49,34 +50,72 @@ function BinarySearch() {
     setSpeed,
   } = useAlgorithmPlayer(steps);
 
-  const binarySearchCode = `
-    public class BinarySearch {
+  const codeSnippet = `
+public static int firstAndLastOccurrence(int[] array, int target) {
 
-      public static int binarySearch(int[] arr, int target) {
-        int left = 0;
-        int right = arr.length - 1;
+        int low = 0;
+        int high = array.length - 1;
+        int mid;
 
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
+        int firstIndex = -1;
+        int lastIndex = -1;
 
-            if (arr[mid] == target) {
-                return mid;
-            } else if (arr[mid] < target) {
-                left = mid + 1;
+        // =====================================================
+        // PHASE 1: FIRST OCCURRENCE
+        // =====================================================
+        while (low <= high) {
+
+            mid = (low + high) / 2;
+
+            if (array[mid] == target) {
+                firstIndex = mid;
+                high = mid - 1;              // move left
+            } else if (array[mid] < target) {
+                low = mid + 1;               // move right
             } else {
-                right = mid - 1;
+                high = mid - 1;              // move left
             }
         }
 
-        return -1;
-      }
-                    `;
+        // =====================================================
+        // EARLY EXIT IF TARGET NOT FOUND
+        // =====================================================
+        if (firstIndex == -1) {
+            return -1;
+        }
+
+        // =====================================================
+        // RESET POINTERS FOR LAST OCCURRENCE
+        // =====================================================
+        low = 0;
+        high = array.length - 1;
+
+        // =====================================================
+        // PHASE 2: LAST OCCURRENCE
+        // =====================================================
+        while (low <= high) {
+
+            mid = (low + high) / 2;
+
+            if (array[mid] == target) {
+                lastIndex = mid;
+                low = mid + 1;               // move right
+            } else if (array[mid] < target) {
+                low = mid + 1;               // move right
+            } else {
+                high = mid - 1;              // move left
+            }
+        }
+
+        return lastIndex;
+    }
+`;
 
   const handleExecute = async () => {
     const array = arrayInput
       .split(",")
       .map((n) => parseInt(n.trim(), 10))
-      .sort((a, b) => a - b); // ensure sorted
+      .sort((a, b) => a - b);
 
     const payload = {
       array,
@@ -85,12 +124,12 @@ function BinarySearch() {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/api/execute/binary-search",
+        "http://localhost:8080/api/execute/first-and-last-occurrence",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
-        },
+        }
       );
 
       const data = await response.json();
@@ -106,18 +145,22 @@ function BinarySearch() {
 
   return (
     <div className="binary-search-container">
-      <h2 className="binary-search-title">Binary Search Visualizer</h2>
+      <h2 className="binary-search-title">
+        First & Last Occurrence Visualizer
+      </h2>
 
       <div className="main-layout">
+        {/* LEFT PANEL */}
         <div className="left-panel">
           <div className="section code-block">
             <pre>
-              <code>{binarySearchCode}</code>
+              <code>{codeSnippet}</code>
             </pre>
           </div>
+
           <textarea
             className="array-input"
-            placeholder="Sorted Array (e.g. 1,3,5,7,9)"
+            placeholder="Sorted Array (e.g. 1,2,2,2,3,4)"
             value={arrayInput}
             onChange={(e) => setArrayInput(e.target.value)}
           />
@@ -135,6 +178,7 @@ function BinarySearch() {
           </button>
         </div>
 
+        {/* RIGHT PANEL */}
         <div className="right-panel">
           {steps.length > 0 && (
             <div className="visualization-layout">
@@ -143,20 +187,36 @@ function BinarySearch() {
                 <h3>
                   Step {currentStep + 1} / {steps.length}
                 </h3>
-
-                <p className="step-message">{getStepMessage(step)}</p>
+                <p className="step-message">
+                  {getStepMessage(step)}
+                </p>
               </div>
 
+              {/* 2️⃣ VARIABLES (fixed) */}
               <div className="viz-variables">
                 {step.pointers?.low !== undefined && (
-                  <div className="pointer-value">low = {step.pointers.low}</div>
+                  <div className="pointer-value">
+                    low = {step.pointers.low}
+                  </div>
                 )}
                 {step.pointers?.mid !== undefined && (
-                  <div className="pointer-value">mid = {step.pointers.mid}</div>
+                  <div className="pointer-value">
+                    mid = {step.pointers.mid}
+                  </div>
                 )}
                 {step.pointers?.high !== undefined && (
                   <div className="pointer-value">
                     high = {step.pointers.high}
+                  </div>
+                )}
+                {step.pointers?.firstIndex !== undefined && (
+                  <div className="pointer-value">
+                    firstIndex = {step.pointers.firstIndex}
+                  </div>
+                )}
+                {step.pointers?.lastIndex !== undefined && (
+                  <div className="pointer-value">
+                    lastIndex = {step.pointers.lastIndex}
                   </div>
                 )}
 
@@ -165,6 +225,7 @@ function BinarySearch() {
                 </div>
               </div>
 
+              {/* 3️⃣ SCROLLABLE (array + controls) */}
               <div className="viz-scrollable">
                 <div className="array-container">
                   {array.map((value, index) => {
@@ -181,14 +242,8 @@ function BinarySearch() {
 
                         <div className={className}>
                           {value}
-                          {index === low && (
-                            <div className="pointer low-ptr">L</div>
-                          )}
                           {index === mid && (
                             <div className="pointer mid-ptr">M</div>
-                          )}
-                          {index === high && (
-                            <div className="pointer high-ptr">H</div>
                           )}
                         </div>
                       </div>
@@ -198,7 +253,11 @@ function BinarySearch() {
 
                 {step.finished && (
                   <div className="result-box">
-                    🎯 Result: <strong>{step.returnValue}</strong>
+                    🎯 Result:{" "}
+                    <strong>
+                      [{step.pointers.firstIndex},{" "}
+                      {step.pointers.lastIndex}]
+                    </strong>
                   </div>
                 )}
 
@@ -215,7 +274,9 @@ function BinarySearch() {
                     setCurrentStep(0);
                   }}
                   speed={speed}
-                  onSpeedChange={(e) => setSpeed(Number(e.target.value))}
+                  onSpeedChange={(e) =>
+                    setSpeed(Number(e.target.value))
+                  }
                 />
               </div>
             </div>
@@ -226,4 +287,4 @@ function BinarySearch() {
   );
 }
 
-export default BinarySearch;
+export default FirstAndLastOccurrence;

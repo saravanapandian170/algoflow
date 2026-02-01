@@ -33,6 +33,7 @@ function getStepMessage(step) {
 
 function LinearSearch() {
   const [steps, setSteps] = useState([]);
+  const [array, setArray] = useState([]);
   const [arrayInput, setArrayInput] = useState("");
   const [target, setTarget] = useState("");
 
@@ -77,7 +78,8 @@ function LinearSearch() {
       );
 
       const data = await response.json();
-      setSteps(data);
+      setArray(data.array)
+      setSteps(data.steps);
     } catch (err) {
       console.error("API call failed:", err);
     }
@@ -152,7 +154,7 @@ function LinearSearch() {
                 {/* 3️⃣ SCROLLABLE CONTENT */}
                 <div className="viz-scrollable">
                   <div className="array-container">
-                    {steps[currentStep].arraySnapshot.map((value, index) => {
+                    {array.map((value, index) => {
                       const isPointer =
                         steps[currentStep].pointers?.i === index;
 

@@ -37,7 +37,6 @@ public class IrExecutionEngine {
 
             ExecutionStep step = new ExecutionStep(
                     stepCounter++,
-                    copyArray(state.getArray()),
                     copyPointers(state),
                     List.of(),
                     "Executing " + instruction.getType(),
@@ -45,6 +44,10 @@ public class IrExecutionEngine {
                     state.getReturnValue()
             );
             steps.add(step);
+            if (stepCounter > 5000) {
+                throw new IllegalStateException("Execution step limit exceeded");
+            }
+
         }
 
         return steps;
@@ -272,6 +275,10 @@ public class IrExecutionEngine {
             return state.getArray()[index];
         }
 
+        else if(left instanceof String) {
+            return state.getVariables().get(left);
+        }
+
         throw new IllegalArgumentException("Invalid compare left: " + left);
     }
 
@@ -288,9 +295,10 @@ public class IrExecutionEngine {
         }
 
         // numeric literal
-        if (token.matches("-?\\d+")) {
+        if (Character.isDigit(token.charAt(0)) || token.charAt(0) == '-') {
             return Integer.parseInt(token);
         }
+
 
         // algorithm variable (low, high, mid, i)
         if (state.getVariables().containsKey(token)) {
