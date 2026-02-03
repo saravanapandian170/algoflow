@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import SearchSelector from "./SearchSelector";
-import LinearSearch from "./pages/LinearSearch";
-import BinarySearch from "./pages/BinarySearch";
-import FirstAndLastOccurrence from "./pages/FirstAndLastOccurrence";
+import LinearSearch from "./algorithms/linearSearch/LinearSearch";
+import BinarySearch from "./algorithms/binarySearch/BinarySearch";
+import FirstAndLastOccurrence from "./algorithms/firstAndLastOccurrence/FirstAndLastOccurrence";
 import "./styles/App.css";
 
 function App() {

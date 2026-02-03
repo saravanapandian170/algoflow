@@ -1,0 +1,45 @@
+/* ================================
+   RIGHT PANEL – TOP (STATIC)
+================================ */
+
+.viz-header {
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.step-message {
+  font-size: 15px;
+  color: #374151;
+  min-height: 20px;
+  line-height: 20px;
+}
+
+.viz-variables {
+  padding: 8px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pointer-value {
+  font-size: 15px;
+  color: #374151;
+  background-color: #e0f2fe;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.target-display {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}

@@ -1,8 +1,10 @@
 import { useState } from "react";
-import "../styles/BinarySearch.css";
-import "../styles/LinearSearch.css";
-import { useAlgorithmPlayer } from "../hooks/useAlgorithmPlayer.js";
-import AlgorithmControls from "../components/AlgorithmControls";
+import "../binarySearch/BinarySearch.css";
+import "../linearSearch/LinearSearch.css";
+import "../../styles/LeftPanel.css";
+import "../../styles/RightPanelTop.css";
+import { useAlgorithmPlayer } from "../../hooks/useAlgorithmPlayer.js";
+import AlgorithmControls from "../../components/AlgorithmControls.jsx";
 
 function getStepMessage(step) {
   if (!step) return "";

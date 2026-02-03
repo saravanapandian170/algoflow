@@ -1,7 +1,11 @@
 import { useState } from "react";
-import "../styles/LinearSearch.css";
-import { useAlgorithmPlayer } from "../hooks/useAlgorithmPlayer.js";
-import AlgorithmControls from "../components/AlgorithmControls";
+import "./LinearSearch.css";
+import "../../styles/LeftPanel.css";
+import "../../styles/RightPanelTop.css";
+import { useAlgorithmPlayer } from "../../hooks/useAlgorithmPlayer.js";
+import AlgorithmControls from "../../components/AlgorithmControls.jsx";
+import { linearSearchCodeLines } from "./linearSearchCodeLines.js";
+import { linearSearchStepToCodeLineMap } from "./linearSearchStepMap";
 
 function getStepMessage(step) {
   if (!step) return "";
@@ -46,19 +50,6 @@ function LinearSearch() {
     setSpeed,
   } = useAlgorithmPlayer(steps);
 
-  const linearSearchCode = `
-  class LinearSearch {
-    public int linearSearch(int[] arr, int target) {
-        for(int i = 0; i < arr.length; i++) {
-          if(arr[i] == target) {
-              return i;
-          }
-        }
-        return -1;
-    }
-  }
-  `;
-
   const handleExecute = async () => {
     const array = arrayInput.split(",").map((n) => parseInt(n.trim(), 10));
 
@@ -78,12 +69,18 @@ function LinearSearch() {
       );
 
       const data = await response.json();
-      setArray(data.array)
+      setArray(data.array);
       setSteps(data.steps);
+      setCurrentStep(0);
     } catch (err) {
       console.error("API call failed:", err);
     }
   };
+
+  const activeLines =
+    steps.length > 0
+      ? linearSearchStepToCodeLineMap[steps[currentStep]?.message] || []
+      : [];
 
   return (
     <div className="linear-search-container">
@@ -94,8 +91,18 @@ function LinearSearch() {
           {/* LEFT PANEL */}
           <div className="left-panel">
             <div className="section code-block">
-              <pre>
-                <code>{linearSearchCode}</code>
+              <pre className="code-pre">
+                {linearSearchCodeLines.map((line, index) => (
+                  <div
+                    key={index}
+                    className={`code-line ${
+                      activeLines.includes(index) ? "active-line" : ""
+                    }`}
+                  >
+                    <span className="line-number">{index + 1}</span>
+                    <span className="line-content">{line}</span>
+                  </div>
+                ))}
               </pre>
             </div>
 

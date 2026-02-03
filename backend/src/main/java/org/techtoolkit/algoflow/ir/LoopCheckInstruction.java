@@ -15,4 +15,9 @@ public class LoopCheckInstruction implements IrInstruction {
     public String getType() {
         return "LOOP_CHECK";
     }
+
+    @Override
+    public String getMessage() {
+        return "Executing LOOP_CHECK " + left + " " + operator + " " + right;
+    }
 }

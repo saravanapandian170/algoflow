@@ -11,4 +11,9 @@ public class JumpInstruction implements IrInstruction{
     public String getType() {
         return "JUMP";
     }
+
+    @Override
+    public String getMessage() {
+        return "";
+    }
 }

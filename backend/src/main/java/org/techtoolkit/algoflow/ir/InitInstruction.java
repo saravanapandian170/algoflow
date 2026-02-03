@@ -15,4 +15,9 @@ public class InitInstruction implements IrInstruction {
     public String getType() {
         return "INIT";
     }
+
+    @Override
+    public String getMessage() {
+        return "Executing INIT " + variable + " " + value;
+    }
 }

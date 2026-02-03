@@ -39,7 +39,7 @@ public class IrExecutionEngine {
                     stepCounter++,
                     copyPointers(state),
                     List.of(),
-                    "Executing " + instruction.getType(),
+                    instruction.getMessage(),
                     state.isFinished(),
                     state.getReturnValue()
             );

@@ -1,0 +1,117 @@
+/* ================================
+   LEFT PANEL – SHARED
+================================ */
+
+/* Container */
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  border-radius: 12px;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Sections inside left panel */
+.left-panel .section {
+  margin-bottom: 25px;
+}
+
+/* ================================
+   CODE VIEWER (Shared)
+================================ */
+
+.code-pre {
+  background-color: #0f172a;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+/* Single line of code */
+.code-line {
+  display: flex;
+  gap: 12px;
+  padding: 2px 6px;
+  font-family: "Fira Code", monospace;
+  font-size: 14px;
+  color: #e5e7eb;
+}
+
+/* Line number */
+.line-number {
+  width: 28px;
+  text-align: right;
+  color: #64748b;
+  user-select: none;
+}
+
+/* 🔥 Highlighted line */
+.active-line {
+  background-color: rgba(59, 130, 246, 0.25);
+  border-left: 4px solid #3b82f6;
+}
+
+/* ================================
+   INPUTS (Shared)
+================================ */
+
+.array-input {
+  width: 100%;
+  min-height: 120px;
+  max-height: 300px;
+  padding: 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 2px solid #d1d5db;
+  outline: none;
+
+  resize: vertical;
+  overflow-y: auto;
+
+  font-family: "Fira Code", monospace;
+  line-height: 1.6;
+}
+
+.array-input:focus {
+  border-color: #2563eb;
+}
+
+.input-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.target-input {
+  width: 200px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+/* ================================
+   EXECUTE BUTTON (Shared)
+================================ */
+
+.execute-button {
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #2563eb;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.execute-button:hover {
+  background-color: #1d4ed8;
+}
+
+.execute-button:active {
+  transform: scale(0.97);
+}

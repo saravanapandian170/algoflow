@@ -14,5 +14,11 @@ public class AssignInstruction implements IrInstruction {
     public String getType() {
         return "ASSIGN";
     }
+
+    @Override
+    public String getMessage() {
+        return "Executing ASSIGN " + variable + " to " + expression;
+    }
+
 }
 

@@ -15,4 +15,9 @@ public class CompareInstruction implements IrInstruction {
     public String getType() {
         return "COMPARE";
     }
+
+    @Override
+    public String getMessage() {
+        return "Executing COMPARE " + left + " " + operator + " " + right;
+    }
 }

@@ -35,19 +35,6 @@
   height: calc(100vh - 120px);
 }
 
-
-/* ================================
-   Left Panel
-================================ */
-.left-panel {
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  border-radius: 12px;
-  height: 100%;
-  overflow: visible;
-}
-
 /* ================================
    Right Panel
 ================================ */
@@ -66,86 +53,6 @@
 ================================ */
 .section {
   margin-bottom: 25px;
-}
-
-/* ================================
-   Code Editor
-================================ */
-.code-editor {
-  width: 100%;
-  min-height: 220px;
-  padding: 12px;
-  font-family: "Fira Code", monospace;
-  font-size: 14px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  background-color: #0f172a;
-  color: #e5e7eb;
-  outline: none;
-  resize: vertical;
-}
-
-.code-editor::placeholder {
-  color: #9ca3af;
-}
-
-/* ================================
-   Inputs
-================================ */
-.input-row {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.input {
-  flex: 1;
-  min-width: 200px;
-  padding: 10px 12px;
-  font-size: 14px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  outline: none;
-}
-
-.input:focus {
-  border-color: #2563eb;
-}
-
-/* ================================
-   Execute Button
-================================ */
-.execute-button {
-  padding: 12px 24px;
-  font-size: 15px;
-  font-weight: 500;
-  color: #ffffff;
-  background-color: #2563eb;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.execute-button:hover {
-  background-color: #1d4ed8;
-}
-
-.execute-button:active {
-  transform: scale(0.97);
-}
-
-/* ================================
-   Visualization Content
-================================ */
-.visualization-content {
-  min-height: 100%;               /* PREVENT LAYOUT JUMP */
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  text-align: center;
-  gap: 16px;
-  width: 100%; 
 }
 
 /* ================================
@@ -175,38 +82,6 @@
 .empty-state span {
   font-size: 13px;
   margin-top: 4px;
-}
-
-/* ================================
-   Step Message
-================================ */
-.step-message {
-  font-size: 15px;
-  color: #374151;
-
-  min-height: 20px;
-  line-height: 20px; 
-}
-
-/* ================================
-   Pointer Value Badge
-================================ */
-.pointer-value {
-  font-size: 15px;
-  color: #374151;
-  background-color: #e0f2fe;
-  padding: 6px 12px;
-  border-radius: 6px;
-}
-
-/* ================================
-   Target Display
-================================ */
-.target-display {
-  margin-bottom: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #333;
 }
 
 /* ================================
@@ -314,53 +189,6 @@ body {
   overflow: hidden;
 }
 
-.array-input {
-  width: 100%;
-  min-height: 120px;
-  max-height: 300px;          /* makes it big */
-  padding: 12px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: 2px solid #d1d5db;
-  outline: none;
-
-  resize: vertical;
-  overflow-y: auto;
-
-  font-family: "Fira Code", monospace;
-  line-height: 1.6;
-  box-sizing: border-box;
-}
-
-.array-input:focus {
-  border-color: #2563eb;
-}
-
-.input-row {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 16px;
-}
-
-.input-column {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: flex-start;
-}
-
-.target-input {
-  width: 200px;
-  padding: 6px 10px;
-  font-size: 14px;
-
-  height: auto;          
-  min-height: unset;     
-  flex: none;            
-
-  box-sizing: border-box;
-}
-
 .array-item {
   display: flex;
   flex-direction: column;
@@ -404,16 +232,6 @@ body {
   flex-direction: column;
   align-items: center;   
   text-align: center; 
-}
-
-.viz-variables {
-  padding: 8px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  border-bottom: 1px solid #e5e7eb;
 }
 
 .viz-scrollable {

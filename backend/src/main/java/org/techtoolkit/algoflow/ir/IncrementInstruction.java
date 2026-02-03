@@ -13,4 +13,9 @@ public class IncrementInstruction implements IrInstruction {
     public String getType() {
         return "INCREMENT";
     }
+
+    @Override
+    public String getMessage() {
+        return "Executing INCREMENT " + variable;
+    }
 }

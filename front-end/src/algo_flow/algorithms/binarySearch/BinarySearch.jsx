@@ -1,8 +1,12 @@
 import { useState } from "react";
-import "../styles/BinarySearch.css";
-import "../styles/LinearSearch.css";
-import { useAlgorithmPlayer } from "../hooks/useAlgorithmPlayer.js";
-import AlgorithmControls from "../components/AlgorithmControls";
+import "./BinarySearch.css";
+import "../linearSearch/LinearSearch.css";
+import "../../styles/LeftPanel.css";
+import "../../styles/RightPanelTop.css";
+import { useAlgorithmPlayer } from "../../hooks/useAlgorithmPlayer.js";
+import AlgorithmControls from "../../components/AlgorithmControls.jsx";
+import { binarySearchCodeLines } from "./binarySearchCodeLines.js";
+import { binarySearchStepToCodeLineMap } from "./binarySearchStepMap";
 
 function getStepMessage(step) {
   if (!step) return "";
@@ -31,7 +35,7 @@ function getStepMessage(step) {
       return "Target found or search exhausted";
 
     default:
-      return step.message;
+      return "";
   }
 }
 
@@ -48,29 +52,6 @@ function BinarySearch() {
     speed,
     setSpeed,
   } = useAlgorithmPlayer(steps);
-
-  const binarySearchCode = `
-    public class BinarySearch {
-
-      public static int binarySearch(int[] arr, int target) {
-        int left = 0;
-        int right = arr.length - 1;
-
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-
-            if (arr[mid] == target) {
-                return mid;
-            } else if (arr[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-
-        return -1;
-      }
-                    `;
 
   const handleExecute = async () => {
     const array = arrayInput
@@ -102,6 +83,9 @@ function BinarySearch() {
     }
   };
 
+  const activeLines =
+    binarySearchStepToCodeLineMap[steps[currentStep]?.message] || [];
+
   const step = steps[currentStep];
 
   return (
@@ -111,10 +95,21 @@ function BinarySearch() {
       <div className="main-layout">
         <div className="left-panel">
           <div className="section code-block">
-            <pre>
-              <code>{binarySearchCode}</code>
+            <pre className="code-pre">
+              {binarySearchCodeLines.map((line, index) => (
+                <div
+                  key={index}
+                  className={`code-line ${
+                    activeLines.includes(index) ? "active-line" : ""
+                  }`}
+                >
+                  <span className="line-number">{index + 1}</span>
+                  <span className="line-content">{line}</span>
+                </div>
+              ))}
             </pre>
           </div>
+
           <textarea
             className="array-input"
             placeholder="Sorted Array (e.g. 1,3,5,7,9)"

@@ -12,4 +12,9 @@ public class ReturnInstruction implements IrInstruction {
     public String getType() {
         return "RETURN";
     }
+
+    @Override
+    public String getMessage() {
+        return "Executing RETURN " + value;
+    }
 }
